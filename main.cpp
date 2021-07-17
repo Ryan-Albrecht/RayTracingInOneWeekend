@@ -1,7 +1,7 @@
-#include "rtweekend.h"
-
+#include "camera.h"
 #include "color.h"
 #include "hittableList.h"
+#include "rtweekend.h"
 #include "sphere.h"
 
 #include <iostream>
@@ -26,6 +26,7 @@ int main() {
     const double aspectRatio = 16.0 / 9.0;
     const int imageWidth = 400;
     const int imageHeight = static_cast<int>(imageWidth / aspectRatio);
+    const int samplesPerPixel = 100;
 
     // World
     hittableList world;
@@ -34,14 +35,7 @@ int main() {
 
     // Camera
 
-    const auto viewportHeight = 2.0;
-    const auto viewportWidth = aspectRatio * viewportHeight;
-    const auto focalLength = 1.0;
-
-    const auto origin = point3(0, 0, 0);
-    const auto horizontal = vec3(viewportWidth, 0, 0);
-    const auto vertical = vec3(0, viewportHeight, 0);
-    const auto lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - vec3(0, 0, focalLength);
+    camera cam;
 
     // Render to PPM (Portable Pix Map) image format
 
@@ -51,11 +45,15 @@ int main() {
     for (int y = imageHeight - 1; y >= 0; y--) {
         std::cerr << "\rScanlines remaining: " << y << " ";
         for (int x = 0; x < imageWidth; x++) {
-            const auto u = double(x) / (imageWidth - 1);
-            const auto v = double(y) / (imageHeight - 1);
-            ray r(origin, lowerLeftCorner + u * horizontal + v * vertical - origin);
-            color pixelColor = rayColor(r, world);
-            writeColor(std::cout, pixelColor);
+            color pixelColor(0, 0, 0);
+            for (int s = 0; s < samplesPerPixel; s++) {
+                auto u = (x + randomDouble()) / (imageWidth - 1);
+                auto v = (y + randomDouble()) / (imageHeight - 1);
+
+                const ray r = cam.getRay(u, v);
+                pixelColor += rayColor(r, world);
+            }
+            writeColor(std::cout, pixelColor, samplesPerPixel);
         }
     }
 

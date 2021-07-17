@@ -28,6 +28,15 @@ inline double randomDouble() {
     return distribution(generator);
 }
 
+// clamps the value x to the range [min,max]
+inline double clamp(double x, double min, double max) {
+    if (x < min)
+        return min;
+    if (x > max)
+        return max;
+    return x;
+}
+
 // Common Headers
 
 #include "ray.h"
