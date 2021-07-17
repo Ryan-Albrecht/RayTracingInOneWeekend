@@ -9,11 +9,11 @@ double hitSphere(const point3 &center, double radius, const ray &r) {
     vec3 oc = r.getOrigin() - center;
     // (t^2) * b dot b + 2tb dot (A-C) + (A-C) dot (A-C) - r*2 = 0
     // where t is variable
-    const auto a = dot(r.getDirection(), r.getDirection());
-    const auto b = 2.0 * dot(oc, r.getDirection());
-    const auto c = dot(oc, oc) - radius * radius;
+    const auto a = r.getDirection().lengthSquared();
+    const auto half_b = dot(oc, r.getDirection());
+    const auto c = oc.lengthSquared() - radius * radius;
     // discriminant of quadratic polynomial where a != 0 is b^2 - 4ac
-    const auto discriminant = b * b - 4 * a * c;
+    const auto discriminant = half_b * half_b - a * c;
     // positive (meaning two real solutions)
     // negative (meaning no real solutions)
     // zero (meaning one real solution)
@@ -21,7 +21,7 @@ double hitSphere(const point3 &center, double radius, const ray &r) {
     if (discriminant < 0) {
         return -1.0;
     } else {
-        return (-b - sqrt(discriminant)) / (2.0 * a);
+        return (-half_b - sqrt(discriminant)) / a;
     }
 }
 
