@@ -48,7 +48,9 @@ bool sphere::hit(const ray &r, double tMin, double tMax, hitRecord &rec) const {
     rec.p = r.at(rec.t);
 
     // normal as unit vector
-    rec.normal = (rec.p - center) / radius;
+    const vec3 outwardNormal = (rec.p - center) / radius;
+
+    rec.setFaceNormal(r, outwardNormal);
 
     return true;
 }
