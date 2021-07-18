@@ -147,3 +147,14 @@ vec3 refract(const vec3 &incomingRay, const vec3 &normal, double etaiOverEtat) {
     vec3 rOutParallel = -sqrt(fabs(1.0 - rOutPerpendicular.lengthSquared())) * normal;
     return rOutPerpendicular + rOutParallel;
 }
+
+// Used in Defocus Blur
+vec3 randomInUnitDisk() {
+    while (true) {
+        const auto p = vec3(randomDouble(-1, 1), randomDouble(-1, 1), 0);
+        if (p.lengthSquared() >= 1) {
+            continue;
+        }
+        return p;
+    }
+}

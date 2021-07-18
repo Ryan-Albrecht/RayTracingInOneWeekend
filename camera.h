@@ -5,24 +5,29 @@
 class camera {
 public:
     // verticalFieldOfView is in degrees
-    camera(point3 lookFrom, point3 lookAt, vec3 vup, double verticalFieldOfView, double aspectRatio) {
+    camera(point3 lookFrom, point3 lookAt, vec3 vup, double verticalFieldOfView,
+           double aspectRatio, double aperture, double focusDist) {
         const auto theta = degreesToRadians(verticalFieldOfView);
         const auto height = tan(theta / 2);
         const auto viewportHeight = 2.0 * height;
         const auto viewportWidth = aspectRatio * viewportHeight;
 
-        const auto w = unitVector(lookFrom - lookAt);
-        const auto u = unitVector(cross(vup, w));
-        const auto v = cross(w, u);
+        w = unitVector(lookFrom - lookAt);
+        u = unitVector(cross(vup, w));
+        v = cross(w, u);
 
         origin = lookFrom;
-        horizontal = viewportWidth * u;
-        vertical = viewportHeight * v;
-        lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - w;
+        horizontal = focusDist * viewportWidth * u;
+        vertical = focusDist * viewportHeight * v;
+        lowerLeftCorner = origin - horizontal / 2 - vertical / 2 - focusDist * w;
+
+        lensRadius = aperture / 2;
     }
 
     ray getRay(double s, double t) const {
-        return ray(origin, lowerLeftCorner + s * horizontal + t * vertical - origin);
+        vec3 rd = lensRadius * randomInUnitDisk();
+        vec3 offset = u * rd.x() + v * rd.y();
+        return ray(origin + offset, lowerLeftCorner + s * horizontal + t * vertical - origin - offset);
     }
 
 private:
@@ -30,4 +35,6 @@ private:
     point3 lowerLeftCorner;
     vec3 horizontal;
     vec3 vertical;
+    vec3 u, v, w;
+    double lensRadius;
 };

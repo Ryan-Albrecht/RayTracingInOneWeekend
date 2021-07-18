@@ -60,7 +60,13 @@ int main() {
 
     // Camera
 
-    camera cam(point3(-2, 2, 1), point3(0, 0, -1), vec3(0, 1, 0), 20, aspectRatio);
+    const point3 lookFrom(3, 3, 2);
+    const point3 lookAt(0, 0, -1);
+    const vec3 vup(0, 1, 0);
+    const auto distToFocus = (lookFrom - lookAt).length();
+    const auto aperture = 2.0;
+
+    camera cam(lookFrom, lookAt, vup, 20, aspectRatio, aperture, distToFocus);
 
     // Render to PPM (Portable Pix Map) image format
 
