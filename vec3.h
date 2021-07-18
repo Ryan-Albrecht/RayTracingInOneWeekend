@@ -140,3 +140,10 @@ vec3 randomInHemisphere(const vec3 &normal) {
 vec3 reflect(const vec3 &incomingRay, const vec3 &normal) {
     return incomingRay - 2 * dot(incomingRay, normal) * normal;
 }
+
+vec3 refract(const vec3 &incomingRay, const vec3 &normal, double etaiOverEtat) {
+    const auto cosTheta = fmin(dot(-incomingRay, normal), 1.0);
+    vec3 rOutPerpendicular = etaiOverEtat * (incomingRay + cosTheta * normal);
+    vec3 rOutParallel = -sqrt(fabs(1.0 - rOutPerpendicular.lengthSquared())) * normal;
+    return rOutPerpendicular + rOutParallel;
+}

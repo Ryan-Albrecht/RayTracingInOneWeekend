@@ -46,8 +46,8 @@ int main() {
     hittableList world;
 
     const auto materialGround = make_shared<lambertian>(color(0.8, 0.8, 0.0));
-    const auto materialCenter = make_shared<lambertian>(color(0.7, 0.3, 0.3));
-    const auto materialLeft = make_shared<metal>(color(0.8, 0.8, 0.8), 0.3);
+    const auto materialCenter = make_shared<dielectric>(1.5);
+    const auto materialLeft = make_shared<dielectric>(1.5);
     const auto materialRight = make_shared<metal>(color(0.8, 0.6, 0.2), 1.0);
 
     world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, materialGround));

@@ -52,3 +52,25 @@ bool metal::scatter(const ray &rIn, const hitRecord &rec, color &attenuation, ra
     attenuation = albedo;
     return (dot(scattered.getDirection(), rec.normal) > 0);
 }
+
+class dielectric : public material {
+public:
+    dielectric(double indexOfRefraction) : indexOfRefraction(indexOfRefraction) {}
+
+    virtual bool scatter(const ray &rIn, const hitRecord &rec,
+                         color &attenuation, ray &scattered) const override;
+
+private:
+    double indexOfRefraction;
+};
+
+bool dielectric::scatter(const ray &rIn, const hitRecord &rec, color &attenuation, ray &scattered) const {
+    attenuation = color(1.0, 1.0, 1.0);
+    const double refractionRatio = rec.frontFace ? (1.0 / indexOfRefraction) : indexOfRefraction;
+
+    const vec3 unitDirection = unitVector(rIn.getDirection());
+    const vec3 refracted = refract(unitDirection, rec.normal, refractionRatio);
+
+    scattered = ray(rec.p, refracted);
+    return true;
+}
