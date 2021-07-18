@@ -43,6 +43,29 @@ public:
         return e[0] * e[0] + e[1] * e[1] + e[2] * e[2];
     }
 
+    // pick a random point in the unit cube where x, y, and z all range from [0, 1.0)
+    inline static vec3 random() {
+        return vec3(randomDouble(), randomDouble(), randomDouble());
+    }
+
+    // pick a random point in the cube where x, y, and z all range from [min, max)
+    inline static vec3 random(double min, double max) {
+        return vec3(randomDouble(min, max), randomDouble(min, max), randomDouble(min, max));
+    }
+
+    // rejection method algorithm
+    //  1. Pick a random point in the unit cube where x, y, and z all range from [-1, 1)
+    //  2. Reject this point and try again if the point is outside the sphere
+    static vec3 randomInUnitSphere() {
+        while (true) {
+            auto p = vec3::random(-1, 1);
+            if (p.lengthSquared() >= 1) {
+                continue;
+            }
+            return p;
+        }
+    }
+
     double e[3];
 };
 

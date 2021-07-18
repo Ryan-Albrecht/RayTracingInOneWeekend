@@ -9,7 +9,8 @@
 color rayColor(const ray &r, const hittable &world) {
     hitRecord rec;
     if (world.hit(r, 0, infinity, rec)) {
-        return 0.5 * (rec.normal + color(1, 1, 1));
+        const point3 target = rec.p + rec.normal + point3::randomInUnitSphere();
+        return 0.5 * rayColor(ray(rec.p, target - rec.p), world);
     }
 
     const vec3 unitDirection = unitVector(r.getDirection());
