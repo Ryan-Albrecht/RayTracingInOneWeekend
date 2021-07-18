@@ -43,22 +43,19 @@ int main() {
     const int maxDepth = 50;
 
     // World
+
+    const auto R = cos(pi / 4);
     hittableList world;
 
-    const auto materialGround = make_shared<lambertian>(color(0.8, 0.8, 0.0));
-    const auto materialCenter = make_shared<lambertian>(color(0.1, 0.2, 0.5));
-    const auto materialLeft = make_shared<dielectric>(1.5);
-    const auto materialRight = make_shared<metal>(color(0.8, 0.6, 0.2), 0.0);
+    const auto material_left = make_shared<lambertian>(color(0, 0, 1));
+    const auto material_right = make_shared<lambertian>(color(1, 0, 0));
 
-    world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, materialGround));
-    world.add(make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5, materialCenter));
-    world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, materialLeft));
-    world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), -0.4, materialLeft));
-    world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, materialRight));
+    world.add(make_shared<sphere>(point3(-R, 0, -1), R, material_left));
+    world.add(make_shared<sphere>(point3(R, 0, -1), R, material_right));
 
     // Camera
 
-    camera cam;
+    camera cam(90.0, aspectRatio);
 
     // Render to PPM (Portable Pix Map) image format
 

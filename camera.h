@@ -4,10 +4,13 @@
 
 class camera {
 public:
-    camera() {
-        const auto aspectRatio = 16.0 / 9.0;
-        const auto viewportHeight = 2.0;
+    // verticalFieldOfView is in degrees
+    camera(double verticalFieldOfView, double aspectRatio) {
+        const auto theta = degreesToRadians(verticalFieldOfView);
+        const auto height = tan(theta / 2);
+        const auto viewportHeight = 2.0 * height;
         const auto viewportWidth = aspectRatio * viewportHeight;
+
         const auto focalLength = 1.0;
 
         origin = point3(0, 0, 0);
