@@ -16,8 +16,12 @@ color rayColor(const ray &r, const hittable &world, int depth) {
 
     // 0.001 adds tolerance to fix Shadow Acne
     if (world.hit(r, 0.001, infinity, rec)) {
-        const point3 target = rec.p + randomInHemisphere(rec.normal);
-        return 0.5 * rayColor(ray(rec.p, target - rec.p), world, depth - 1);
+        ray scattered;
+        color attenuation;
+        if (rec.materialPtr->scatter(r, rec, attenuation, scattered)) {
+            return attenuation * rayColor(scattered, world, depth - 1);
+        }
+        return color(0, 0, 0);
     }
 
     const vec3 unitDirection = unitVector(r.getDirection());

@@ -136,3 +136,7 @@ vec3 randomInHemisphere(const vec3 &normal) {
         return -inUnitSphere;
     }
 }
+
+vec3 reflect(const vec3 &incomingRay, const vec3 &normal) {
+    return incomingRay - 2 * dot(incomingRay, normal) * normal;
+}
