@@ -1,6 +1,7 @@
 #include "camera.h"
 #include "color.h"
 #include "hittableList.h"
+#include "material.h"
 #include "rtweekend.h"
 #include "sphere.h"
 
@@ -43,8 +44,16 @@ int main() {
 
     // World
     hittableList world;
-    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
-    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
+
+    const auto materialGround = make_shared<lambertian>(color(0.8, 0.8, 0.0));
+    const auto materialCenter = make_shared<lambertian>(color(0.7, 0.3, 0.3));
+    const auto materialLeft = make_shared<metal>(color(0.8, 0.8, 0.8));
+    const auto materialRight = make_shared<metal>(color(0.8, 0.6, 0.2));
+
+    world.add(make_shared<sphere>(point3(0.0, -100.5, -1.0), 100.0, materialGround));
+    world.add(make_shared<sphere>(point3(0.0, 0.0, -1.0), 0.5, materialCenter));
+    world.add(make_shared<sphere>(point3(-1.0, 0.0, -1.0), 0.5, materialLeft));
+    world.add(make_shared<sphere>(point3(1.0, 0.0, -1.0), 0.5, materialRight));
 
     // Camera
 
