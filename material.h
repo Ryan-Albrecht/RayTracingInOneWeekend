@@ -69,8 +69,18 @@ bool dielectric::scatter(const ray &rIn, const hitRecord &rec, color &attenuatio
     const double refractionRatio = rec.frontFace ? (1.0 / indexOfRefraction) : indexOfRefraction;
 
     const vec3 unitDirection = unitVector(rIn.getDirection());
-    const vec3 refracted = refract(unitDirection, rec.normal, refractionRatio);
+    const double cosTheta = fmin(dot(-unitDirection, rec.normal), 1.0);
+    const double sinTheta = sqrt(1.0 - cosTheta * cosTheta);
 
-    scattered = ray(rec.p, refracted);
+    const bool canRefract = refractionRatio * sinTheta <= 1.0;
+    vec3 direction;
+
+    if (canRefract) {
+        direction = refract(unitDirection, rec.normal, refractionRatio);
+    } else {
+        direction = reflect(unitDirection, rec.normal);
+    }
+
+    scattered = ray(rec.p, direction);
     return true;
 }
