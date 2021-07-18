@@ -116,3 +116,7 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 inline vec3 unitVector(vec3 v) {
     return v / v.length();
 }
+
+static vec3 randomUnitVector() {
+    return unitVector(vec3::randomInUnitSphere());
+}
