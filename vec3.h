@@ -120,3 +120,13 @@ inline vec3 unitVector(vec3 v) {
 static vec3 randomUnitVector() {
     return unitVector(vec3::randomInUnitSphere());
 }
+
+vec3 randomInHemisphere(const vec3 &normal) {
+    vec3 inUnitSphere = vec3::randomInUnitSphere();
+    if (dot(inUnitSphere, normal) > 0.0) {
+        // In the same hemisphere as the normal
+        return inUnitSphere;
+    } else {
+        return -inUnitSphere;
+    }
+}
