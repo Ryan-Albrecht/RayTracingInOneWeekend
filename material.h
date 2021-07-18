@@ -61,6 +61,8 @@ public:
                          color &attenuation, ray &scattered) const override;
 
 private:
+    static double reflectance(double cosine, double refractionRatio);
+
     double indexOfRefraction;
 };
 
@@ -72,15 +74,22 @@ bool dielectric::scatter(const ray &rIn, const hitRecord &rec, color &attenuatio
     const double cosTheta = fmin(dot(-unitDirection, rec.normal), 1.0);
     const double sinTheta = sqrt(1.0 - cosTheta * cosTheta);
 
-    const bool canRefract = refractionRatio * sinTheta <= 1.0;
+    const bool cannotRefract = refractionRatio * sinTheta > 1.0;
     vec3 direction;
 
-    if (canRefract) {
-        direction = refract(unitDirection, rec.normal, refractionRatio);
-    } else {
+    if (cannotRefract || reflectance(cosTheta, refractionRatio) > randomDouble()) {
         direction = reflect(unitDirection, rec.normal);
+    } else {
+        direction = refract(unitDirection, rec.normal, refractionRatio);
     }
 
     scattered = ray(rec.p, direction);
     return true;
+}
+
+double dielectric::reflectance(double cosine, double refractionRatio) {
+    // Use Schick's approximation for reflectance.
+    auto r0 = (1 - refractionRatio) / (1 + refractionRatio);
+    r0 *= r0;
+    return r0 + (1 - r0) * pow((1 - cosine), 5);
 }
