@@ -14,7 +14,8 @@ color rayColor(const ray &r, const hittable &world, int depth) {
         return color(0, 0, 0);
     }
 
-    if (world.hit(r, 0, infinity, rec)) {
+    // 0.001 adds tolerance to fix Shadow Acne
+    if (world.hit(r, 0.001, infinity, rec)) {
         const point3 target = rec.p + rec.normal + point3::randomInUnitSphere();
         return 0.5 * rayColor(ray(rec.p, target - rec.p), world, depth - 1);
     }
